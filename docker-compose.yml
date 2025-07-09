@@ -1,0 +1,40 @@
+services:
+  nlw-agents-pg:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: docker_usr
+      POSTGRES_PASSWORD: docker_psw
+      POSTGRES_DB: agents
+    network_mode: host
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./server/docker/setup_db.sql:/docker-entrypoint-initdb.d/setup.sql
+
+  nlw-agents-app-dev:
+    build:
+      context: ./server
+    container_name: nlw-agents-app-dev
+    network_mode: host
+    volumes:
+      - ./server:/app
+    env_file:
+      - ./server/.env
+    command: npm run dev
+    depends_on:
+      - nlw-agents-pg
+
+  nlw-agents-web-dev:
+    build:
+      context: ./web
+    container_name: nlw-agents-web-dev
+    network_mode: host
+    volumes:
+      - ./web:/app
+    env_file:
+      - ./web/.env
+    command: npm run dev
+    depends_on:
+      - nlw-agents-app-dev
+
+volumes:
+  pg_data:
