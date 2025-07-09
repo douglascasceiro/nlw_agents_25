@@ -1,6 +1,12 @@
 node_modules
 .env
-/server/*
-!/server/Dockerfile
+
+# Web
 /web/*
+!/web/
 !/web/Dockerfile
+
+# Server
+/server/*
+!/server/
+!/server/Dockerfile
